@@ -24,7 +24,7 @@
             min-height: 100vh;
         }
 
-        /* --- Barra Lateral --- */
+        /* --- Barra Lateral Ajustada --- */
         #sidebar {
             position: fixed;
             left: calc(-1 * var(--sidebar-width));
@@ -37,11 +37,15 @@
             z-index: 1000;
             padding: 20px;
             box-sizing: border-box;
+            
+            /* Torna a sidebar um flexbox vertical */
+            display: flex;
+            flex-direction: column;
         }
 
         #sidebar.active { left: 0; }
 
-        .search-container { margin-top: 60px; margin-bottom: 20px; }
+        .search-container { margin-top: 60px; margin-bottom: 20px; flex-shrink: 0; }
 
         #searchBox {
             width: 100%;
@@ -53,8 +57,29 @@
             outline: none;
         }
 
-        /* --- Lista da Sidebar --- */
-        .game-list { list-style: none; padding: 0; }
+        /* --- Lista da Sidebar Scrollável --- */
+        .game-list { 
+            list-style: none; 
+            padding: 0; 
+            margin: 0;
+            overflow-y: auto; /* Ativa o scroll vertical */
+            flex-grow: 1;     /* Faz a lista ocupar todo o espaço disponível */
+            padding-right: 5px; /* Espaço para não cobrir o texto com a barra */
+        }
+
+        /* Estilização da Scrollbar (Chrome, Edge, Safari) */
+        .game-list::-webkit-scrollbar {
+            width: 6px;
+        }
+        .game-list::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+        .game-list::-webkit-scrollbar-thumb {
+            background: var(--accent-color);
+            border-radius: 10px;
+        }
+
         .game-item { margin-bottom: 8px; }
         .game-item a {
             color: #cbd5e1;
@@ -66,7 +91,17 @@
         }
         .game-item a:hover { background: var(--accent-color); color: #000; }
 
-        /* --- Conteúdo Principal --- */
+        /* Container de Resgate fixo no final da sidebar */
+        .redeem-container {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            border: 1px dashed var(--accent-color);
+            flex-shrink: 0; /* Impede que o container de resgate seja esmagado */
+        }
+
+        /* --- Restante do Estilo --- */
         main {
             flex: 1;
             padding: 40px;
@@ -93,6 +128,7 @@
             font-size: 3rem;
             margin-bottom: 40px;
             background: linear-gradient(90deg, #ff0000, #00d4ff, #ff00ff);
+            background-clip: text;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-size: 200%;
@@ -101,7 +137,6 @@
 
         @keyframes flow { 0% { background-position: 0%; } 100% { background-position: 200%; } }
 
-        /* --- Grid de Cards com Imagens --- */
         .grid-container {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -146,6 +181,31 @@
         }
 
         .hidden { display: none !important; }
+        .secret-hidden { display: none !important; }
+
+        .redeem-container input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            border: none;
+            background: #334155;
+            color: white;
+            box-sizing: border-box;
+        }
+
+        .redeem-btn {
+            width: 100%;
+            padding: 8px;
+            background: var(--accent-color);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .redeem-btn:hover { filter: brightness(1.2); }
     </style>
 </head>
 <body>
@@ -156,6 +216,7 @@
         <div class="search-container">
             <input type="text" id="searchBox" placeholder="Buscar jogo..." onkeyup="filterGames()">
         </div>
+        
         <ul class="game-list" id="sideList">
             <li class="game-item" data-name="Geometry Dash Clicker"><a href="https://exploitsroblox.github.io/gdclicker">Geometry Dash Clicker</a></li>
             <li class="game-item" data-name="Undertale Barato"><a href="https://exploitsroblox.github.io/undertale">Undertale Barato</a></li>
@@ -175,14 +236,17 @@
             <li class="game-item" data-name="Minecraft"><a href="https://exploitsroblox.github.io/minecraft">Minecraft</a></li>
             <li class="game-item" data-name="Friday Night Funkin"><a href="https://exploitsroblox.github.io/fnf">Friday Night Funkin</a></li>
             <li class="game-item" data-name="Granny"><a href="https://exploitsroblox.github.io/granny">Granny</a></li>
-
-            
         </ul>
+
+        <div class="redeem-container">
+            <p style="font-size: 0.8rem; color: var(--accent-color); margin-bottom: 5px;">Possui um código?</p>
+            <input type="text" id="redeemInput" placeholder="Digite aqui...">
+            <button class="redeem-btn" onclick="redeemCode()">RESGATAR</button>
+        </div>
     </nav>
 
     <main>
         <h1>EpikGames</h1>
-
         <div class="grid-container" id="gameGrid">
             <a href="https://exploitsroblox.github.io/gdclicker" class="game-card" data-name="Geometry Dash Clicker">
                 <img src="gdclicker.png" alt="GD Clicker">
@@ -191,7 +255,7 @@
 
             <a href="https://exploitsroblox.github.io/undertale" class="game-card" data-name="Undertale Barato">
                 <img src="undertale.png" alt="Undertale">
-                <span>Undertale Barato</span>
+                    <span>Undertale Barato</span>
             </a>
 
             <a href="https://exploitsroblox.github.io/ufo" class="game-card" data-name="Jogo de UFO">
@@ -272,7 +336,12 @@
             <a href="https://exploitsroblox.github.io/granny" class="game-card" data-name="Granny">
                 <img src="granny.png" alt="Granny">
                 <span>Granny</span>
-            </a>   
+            </a>
+            
+            <a href="https://exploitsroblox.github.io/secret" class="game-card secret-hidden" id="secretGame" data-name="Jogo Secreto">
+                <img src="secret.jpg" alt="Secret Game">
+                <span>Secreto</span>
+            </a>
         </div>
     </main>
 
@@ -283,21 +352,39 @@
 
         function filterGames() {
             const query = document.getElementById('searchBox').value.toLowerCase();
-            
-            // Filtra os cards na página principal
             const cards = document.querySelectorAll('.game-card');
             cards.forEach(card => {
                 const name = card.getAttribute('data-name').toLowerCase();
                 card.classList.toggle('hidden', !name.includes(query));
             });
 
-            // Filtra os itens na barra lateral
             const listItems = document.querySelectorAll('.game-item');
             listItems.forEach(item => {
                 const name = item.getAttribute('data-name').toLowerCase();
                 item.classList.toggle('hidden', !name.includes(query));
             });
         }
+
+        function redeemCode() {
+            const codeInput = document.getElementById('redeemInput');
+            const secretCode = "BRUNO"; // Código secreto para desbloquear o jogo
+            const secretGame = document.getElementById('secretGame');
+
+            if (codeInput.value.toUpperCase() === secretCode) {
+                secretGame.classList.remove('secret-hidden');
+                alert("🎉 PARABÉNS! Você desbloqueou um novo jogo!");
+                codeInput.value = "";
+                localStorage.setItem('secretUnlocked', 'true');
+            } else {
+                alert("Código inválido. Tente novamente!");
+            }
+        }
+
+        window.onload = function() {
+            if (localStorage.getItem('secretUnlocked') === 'true') {
+                document.getElementById('secretGame').classList.remove('secret-hidden');
+            }
+        };
     </script>
 </body>
 </html>
