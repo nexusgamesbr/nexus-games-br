@@ -13,6 +13,8 @@
             --accent-color: #00d4ff;
             --text-color: #f8fafc;
             --card-bg: #1e293b;
+            --success-color: #10b981;
+            --error-color: #ef4444;
         }
 
         body {
@@ -24,7 +26,7 @@
             min-height: 100vh;
         }
 
-        /* --- Barra Lateral Ajustada --- */
+        /* --- Barra Lateral --- */
         #sidebar {
             position: fixed;
             left: calc(-1 * var(--sidebar-width));
@@ -37,8 +39,6 @@
             z-index: 1000;
             padding: 20px;
             box-sizing: border-box;
-            
-            /* Torna a sidebar um flexbox vertical */
             display: flex;
             flex-direction: column;
         }
@@ -57,28 +57,16 @@
             outline: none;
         }
 
-        /* --- Lista da Sidebar Scrollável --- */
         .game-list { 
             list-style: none; 
             padding: 0; 
             margin: 0;
-            overflow-y: auto; /* Ativa o scroll vertical */
-            flex-grow: 1;     /* Faz a lista ocupar todo o espaço disponível */
-            padding-right: 5px; /* Espaço para não cobrir o texto com a barra */
+            overflow-y: auto;
+            flex-grow: 1;
         }
 
-        /* Estilização da Scrollbar (Chrome, Edge, Safari) */
-        .game-list::-webkit-scrollbar {
-            width: 6px;
-        }
-        .game-list::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-        }
-        .game-list::-webkit-scrollbar-thumb {
-            background: var(--accent-color);
-            border-radius: 10px;
-        }
+        .game-list::-webkit-scrollbar { width: 6px; }
+        .game-list::-webkit-scrollbar-thumb { background: var(--accent-color); border-radius: 10px; }
 
         .game-item { margin-bottom: 8px; }
         .game-item a {
@@ -91,17 +79,16 @@
         }
         .game-item a:hover { background: var(--accent-color); color: #000; }
 
-        /* Container de Resgate fixo no final da sidebar */
         .redeem-container {
             margin-top: 20px;
             padding: 15px;
             background: rgba(255, 255, 255, 0.05);
             border-radius: 8px;
             border: 1px dashed var(--accent-color);
-            flex-shrink: 0; /* Impede que o container de resgate seja esmagado */
+            flex-shrink: 0;
         }
 
-        /* --- Restante do Estilo --- */
+        /* --- Estilo Principal --- */
         main {
             flex: 1;
             padding: 40px;
@@ -169,17 +156,15 @@
             width: 100%;
             height: 180px;
             object-fit: cover;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
         }
 
         .game-card span {
             margin-top: 15px;
             font-weight: bold;
-            font-size: 1.1rem;
             text-align: center;
-            padding: 0 10px;
         }
 
+        /* Classes de utilidade */
         .hidden { display: none !important; }
         .secret-hidden { display: none !important; }
 
@@ -202,10 +187,18 @@
             border-radius: 4px;
             cursor: pointer;
             font-weight: bold;
-            transition: 0.3s;
         }
 
-        .redeem-btn:hover { filter: brightness(1.2); }
+        #feedbackMessage {
+            margin-top: 10px;
+            font-size: 0.8rem;
+            text-align: center;
+            display: none;
+            padding: 5px;
+            border-radius: 4px;
+        }
+        .success { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+        .error { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
     </style>
 </head>
 <body>
@@ -218,9 +211,9 @@
         </div>
         
         <ul class="game-list" id="sideList">
-            <li class="game-item" data-name="Geometry Dash Clicker"><a href="https://exploitsroblox.github.io/gdclicker">Geometry Dash Clicker</a></li>
-            <li class="game-item" data-name="Undertale Barato"><a href="https://exploitsroblox.github.io/undertale">Undertale Barato</a></li>
-            <li class="game-item" data-name="Jogo de UFO"><a href="https://exploitsroblox.github.io/ufo">Jogo de UFO</a></li>
+            <li class="game-item"><a href="https://exploitsroblox.github.io/gdclicker">Geometry Dash Clicker</a></li>
+            <li class="game-item"><a href="https://exploitsroblox.github.io/undertale">Undertale Barato</a></li>
+            <li class="game-item"><a href="https://exploitsroblox.github.io/ufo">Jogo de UFO</a></li>
             <li class="game-item" data-name="Wave Game"><a href="https://exploitsroblox.github.io/wave">Wave Game</a></li>
             <li class="game-item" data-name="Slither.io"><a href="https://exploitsroblox.github.io/snake">Slither.io</a></li>
             <li class="game-item" data-name="Level Devil"><a href="https://exploitsroblox.github.io/LevelDevil">Level Devil</a></li>
@@ -236,12 +229,16 @@
             <li class="game-item" data-name="Minecraft"><a href="https://exploitsroblox.github.io/minecraft">Minecraft</a></li>
             <li class="game-item" data-name="Friday Night Funkin"><a href="https://exploitsroblox.github.io/fnf">Friday Night Funkin</a></li>
             <li class="game-item" data-name="Granny"><a href="https://exploitsroblox.github.io/granny">Granny</a></li>
+            <li class="game-item secret-hidden" id="side-secret1"><a href="https://exploitsroblox.github.io/guloso">SECRETO: Guloso</a></li>
+            <li class="game-item secret-hidden" id="side-secret2"><a href="https://exploitsroblox.github.io/flappydiv">SECRETO: Flappy Div</a></li>
+            <li class="game-item secret-hidden" id="side-secret3"><a href="https://exploitsroblox.github.io/secret">SECRETO: Bruno</a></li>
         </ul>
 
         <div class="redeem-container">
             <p style="font-size: 0.8rem; color: var(--accent-color); margin-bottom: 5px;">Possui um código?</p>
             <input type="text" id="redeemInput" placeholder="Digite aqui...">
             <button class="redeem-btn" onclick="redeemCode()">RESGATAR</button>
+            <div id="feedbackMessage"></div>
         </div>
     </nav>
 
@@ -255,10 +252,9 @@
 
             <a href="https://exploitsroblox.github.io/undertale" class="game-card" data-name="Undertale Barato">
                 <img src="undertale.png" alt="Undertale">
-                    <span>Undertale Barato</span>
+                <span>Undertale Barato</span>
             </a>
-
-            <a href="https://exploitsroblox.github.io/ufo" class="game-card" data-name="Jogo de UFO">
+             <a href="https://exploitsroblox.github.io/ufo" class="game-card" data-name="Jogo de UFO">
                 <img src="ufo.png" alt="UFO">
                 <span>Jogo de UFO</span>
             </a>
@@ -333,14 +329,19 @@
                 <span>Friday Night Funkin</span>
             </a>
 
-            <a href="https://exploitsroblox.github.io/granny" class="game-card" data-name="Granny">
-                <img src="granny.png" alt="Granny">
-                <span>Granny</span>
+            <a href="https://exploitsroblox.github.io/guloso" class="game-card secret-hidden" id="secret1" data-name="Guloso">
+                <img src="secret.jpg" alt="Guloso">
+                <span>Guloso (Secreto)</span>
+            </a>
+
+            <a href="https://exploitsroblox.github.io/secret" class="game-card secret-hidden" id="secret3" data-name="Bruno">
+                <img src="secret.jpg" alt="Bruno">
+                <span>Bruno (Secreto)</span>
             </a>
             
-            <a href="https://exploitsroblox.github.io/secret" class="game-card secret-hidden" id="secretGame" data-name="Jogo Secreto">
-                <img src="secret.jpg" alt="Secret Game">
-                <span>Secreto</span>
+            <a href="https://exploitsroblox.github.io/flappydiv" class="game-card secret-hidden" id="secret2" data-name="Flappy Div">
+                <img src="secret.jpg" alt="Flappy Div">
+                <span>Flappy Div (Secreto)</span>
             </a>
         </div>
     </main>
@@ -355,35 +356,59 @@
             const cards = document.querySelectorAll('.game-card');
             cards.forEach(card => {
                 const name = card.getAttribute('data-name').toLowerCase();
-                card.classList.toggle('hidden', !name.includes(query));
-            });
-
-            const listItems = document.querySelectorAll('.game-item');
-            listItems.forEach(item => {
-                const name = item.getAttribute('data-name').toLowerCase();
-                item.classList.toggle('hidden', !name.includes(query));
+                if (!card.classList.contains('secret-hidden')) {
+                    card.classList.toggle('hidden', !name.includes(query));
+                }
             });
         }
+
+        // --- SISTEMA DE CÓDIGOS ---
+        const DATABASE_CODES = {
+            "GULOSO": "secret1",
+            "FLAPPYDIV": "secret2",
+            "BRUNO": "secret3" // Você pode ter vários códigos para o mesmo jogo
+        };
 
         function redeemCode() {
-            const codeInput = document.getElementById('redeemInput');
-            const secretCode = "BRUNO"; // Código secreto para desbloquear o jogo
-            const secretGame = document.getElementById('secretGame');
+            const input = document.getElementById('redeemInput');
+            const feedback = document.getElementById('feedbackMessage');
+            const code = input.value.trim().toUpperCase();
 
-            if (codeInput.value.toUpperCase() === secretCode) {
-                secretGame.classList.remove('secret-hidden');
-                alert("🎉 PARABÉNS! Você desbloqueou um novo jogo!");
-                codeInput.value = "";
-                localStorage.setItem('secretUnlocked', 'true');
+            if (DATABASE_CODES[code]) {
+                const gameId = DATABASE_CODES[code];
+                unlockGame(gameId);
+                
+                feedback.textContent = "🎉 Jogo Desbloqueado!";
+                feedback.className = "success";
+                feedback.style.display = "block";
+                input.value = "";
+
+                // Salva no navegador para não perder ao atualizar
+                localStorage.setItem(gameId, "unlocked");
             } else {
-                alert("Código inválido. Tente novamente!");
+                feedback.textContent = "❌ Código inválido!";
+                feedback.className = "error";
+                feedback.style.display = "block";
             }
         }
 
+        function unlockGame(id) {
+            // Mostra no Grid
+            const gameCard = document.getElementById(id);
+            if (gameCard) gameCard.classList.remove('secret-hidden');
+
+            // Mostra na Sidebar
+            const sideItem = document.getElementById('side-' + id);
+            if (sideItem) sideItem.classList.remove('secret-hidden');
+        }
+
+        // Verificar jogos já desbloqueados ao abrir a página
         window.onload = function() {
-            if (localStorage.getItem('secretUnlocked') === 'true') {
-                document.getElementById('secretGame').classList.remove('secret-hidden');
-            }
+            Object.values(DATABASE_CODES).forEach(gameId => {
+                if (localStorage.getItem(gameId) === "unlocked") {
+                    unlockGame(gameId);
+                }
+            });
         };
     </script>
 </body>
