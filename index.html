@@ -114,15 +114,27 @@
         h1 {
             font-size: 3rem;
             margin-bottom: 40px;
-            background: linear-gradient(90deg, #ff0000, #00d4ff, #ff00ff);
+            /* background: linear-gradient(90deg, #bb00ff, #0291de, #037ee2ee, #bb00ff); */
+            background: linear-gradient(90deg, #e10000, #ff8a04, #fbff00ee, #55ff00, #00d4ff, #001eff, #7700ff, #ff00ccee, #e10000);
             background-clip: text;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-size: 200%;
-            animation: flow 5s linear infinite;
+            font-family: "Minecraftia", cursive;
+            font-weight: normal;
+            padding: 10px 20px;
+            animation: flow 2s linear infinite;
         }
-
+        span {
+            font-family: "Minecraftia", cursive;
+            font-weight: lighter;
+        }
         @keyframes flow { 0% { background-position: 0%; } 100% { background-position: 200%; } }
+
+        @font-face {
+            font-family: "Minecraftia";
+            src: url("minecraftia.ttf") format("truetype");
+        }
 
         .grid-container {
             display: grid;
@@ -211,6 +223,7 @@
         </div>
         
         <ul class="game-list" id="sideList">
+            <li class="game-item"><a href="https://exploitsroblox.github.io/apostilas">Apostilas</a></li>
             <li class="game-item"><a href="https://exploitsroblox.github.io/gdclicker">Geometry Dash Clicker</a></li>
             <li class="game-item"><a href="https://exploitsroblox.github.io/undertale">Undertale Barato</a></li>
             <li class="game-item"><a href="https://exploitsroblox.github.io/ufo">Jogo de UFO</a></li>
@@ -244,8 +257,13 @@
     </nav>
 
     <main>
-        <h1>EpikGames</h1>
+        <h1>Nexus Games</h1>
         <div class="grid-container" id="gameGrid">
+            <a href="https://exploitsroblox.github.io/apostilas" class="game-card" data-name="Apostilas">
+                <img src="apostila.png" alt="Apostilas">
+                <span>Apostilas</span>
+            </a>
+
             <a href="https://exploitsroblox.github.io/gdclicker" class="game-card" data-name="Geometry Dash Clicker">
                 <img src="gdclicker.png" alt="GD Clicker">
                 <span>GD Clicker</span>
