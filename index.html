@@ -24,18 +24,18 @@
             color: var(--text-color);
             display: flex;
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        /* --- Barra Lateral --- */
-        #sidebar {
+        /* --- Barras Laterais (Base) --- */
+        .sidebar {
             position: fixed;
-            left: calc(-1 * var(--sidebar-width));
             top: 0;
             width: var(--sidebar-width);
             height: 100%;
             background: var(--sidebar-bg);
             transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 5px 0 15px rgba(0,0,0,0.5);
+            box-shadow: 0 0 15px rgba(0,0,0,0.5);
             z-index: 1000;
             padding: 20px;
             box-sizing: border-box;
@@ -43,30 +43,15 @@
             flex-direction: column;
         }
 
-        #sidebar.active { left: 0; }
+        /* Menu Esquerdo */
+        #left-sidebar { left: calc(-1 * var(--sidebar-width)); }
+        #left-sidebar.active { left: 0; }
+
+        /* Menu Direito */
+        #right-sidebar { right: calc(-1 * var(--sidebar-width)); }
+        #right-sidebar.active { right: 0; }
 
         .search-container { margin-top: 60px; margin-bottom: 20px; flex-shrink: 0; }
-
-        /* categorias na sidebar */
-        .categories-container {
-            margin-top: 20px;
-            padding: 10px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 8px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        .categories-container label {
-            display: inline-flex;
-            align-items: center;
-            font-size: 0.9rem;
-            cursor: pointer;
-            margin-bottom: 0; /* handled by gap */
-        }
-        .categories-container input[type="checkbox"] {
-            margin-right: 5px;
-        }
 
         #searchBox {
             width: 100%;
@@ -78,16 +63,94 @@
             outline: none;
         }
 
+        /* Categorias na sidebar esquerda */
+        .categories-container {
+            margin-top: 10px;
+            padding: 15px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column; /* Vertical para caber melhor na sidebar */
+            gap: 12px;
+            flex-grow: 1; /* Ocupa o espaço do meio */
+            overflow-y: auto;
+        }
+        .categories-container p { margin-top: 0; }
+        .categories-container label {
+            display: inline-flex;
+            align-items: center;
+            font-size: 0.95rem;
+            cursor: pointer;
+        }
+        .achievements-container {
+            margin-top: 15px;
+            padding: 10px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+        }
+        .achievement {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.8rem;
+            margin-bottom: 8px;
+            opacity: 0.3;
+            transition: 0.3s;
+        }
+        .achievement.unlocked { opacity: 1; color: var(--gold); }
+
+        /* --- Destaque da Semana --- */
+        .featured-banner {
+            width: 100%;
+            max-width: 1200px;
+            height: 200px;
+            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.7)), url('1234logo.jpg');
+            background-size: cover;
+            background-position: center;
+            border-radius: 15px;
+            margin-bottom: 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 20px;
+            box-sizing: border-box;
+            border: 2px solid var(--accent-color);
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        .featured-banner:hover { transform: scale(1.01); }
+
+        /* --- Botão Estou com Sorte --- */
+        .lucky-btn {
+            background: linear-gradient(90deg, #e10000, #ff8a04, #fbff00ee, #55ff00, #00d4ff, #001eff, #7700ff, #ff00ccee, #e10000);
+            color: #ffffff;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .categories-container input[type="checkbox"] {
+            margin-right: 10px;
+            accent-color: var(--accent-color);
+            transform: scale(1.2);
+        }
+
+        /* Lista de Jogos na sidebar direita */
         .game-list { 
             list-style: none; 
             padding: 0; 
-            margin: 0;
+            margin: 60px 0 0 0; /* Espaço para o botão */
             overflow-y: auto;
             flex-grow: 1;
         }
 
-        .game-list::-webkit-scrollbar { width: 6px; }
-        .game-list::-webkit-scrollbar-thumb { background: var(--accent-color); border-radius: 10px; }
+        .game-list::-webkit-scrollbar, .categories-container::-webkit-scrollbar { width: 6px; }
+        .game-list::-webkit-scrollbar-thumb, .categories-container::-webkit-scrollbar-thumb { background: var(--accent-color); border-radius: 10px; }
 
         .game-item { margin-bottom: 8px; }
         .game-item a {
@@ -97,6 +160,7 @@
             padding: 10px;
             border-radius: 6px;
             transition: 0.2s;
+            background: rgba(255,255,255,0.02);
         }
         .game-item a:hover { background: var(--accent-color); color: #000; }
 
@@ -116,13 +180,14 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            transition: 0.4s;
+            transition: margin 0.4s;
             background: linear-gradient(135deg, var(--bg-dark) 0%, var(--sidebar-bg) 100%);
+            width: 100%;
         }
 
+        /* Botões de Toggle */
         .toggle-btn {
             position: fixed;
-            left: 20px;
             top: 20px;
             background: var(--accent-color);
             border: none;
@@ -131,18 +196,23 @@
             cursor: pointer;
             font-weight: bold;
             z-index: 1001;
+            color: #000;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            transition: transform 0.2s;
         }
+        .toggle-btn:hover { transform: scale(1.05); }
 
-        /* empurra o conteúdo quando a sidebar está aberta */
-        #sidebar.active ~ main {
-            margin-left: var(--sidebar-width);
-            transition: margin-left 0.4s;
-        }
+        .toggle-left { left: 20px; }
+        .toggle-right { right: 20px; }
+
+        /* Empurra o conteúdo quando as sidebars estão abertas */
+        body.left-active main { margin-left: var(--sidebar-width); }
+        body.right-active main { margin-right: var(--sidebar-width); }
 
         h1 {
             font-size: 3.5rem;
             margin-bottom: 40px;
-            /* background: linear-gradient(90deg, #bb00ff, #0291de, #037ee2ee, #bb00ff); */
+            margin-top: 10px;
             background: linear-gradient(90deg, #e10000, #ff8a04, #fbff00ee, #55ff00, #00d4ff, #001eff, #7700ff, #ff00ccee, #e10000);
             background-clip: text;
             -webkit-background-clip: text;
@@ -152,16 +222,15 @@
             font-weight: normal;
             padding: 10px 20px;
             animation: flow 2s linear infinite;
+            text-align: center;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
         }
 
         h1:hover {
             transform: scale(1.05);
             transition: transform 0.2s;
         }
-        span {
-            font-family: "Minecraftia", cursive;
-            font-weight: lighter;
-        }
+        
         @keyframes flow { 0% { background-position: 0%; } 100% { background-position: 200%; } }
 
         @font-face {
@@ -215,7 +284,7 @@
 
         .redeem-container input {
             width: 100%;
-            padding: 8px;
+            padding: 10px;
             margin-bottom: 10px;
             border-radius: 4px;
             border: none;
@@ -226,12 +295,13 @@
 
         .redeem-btn {
             width: 100%;
-            padding: 8px;
+            padding: 10px;
             background: var(--accent-color);
             border: none;
             border-radius: 4px;
             cursor: pointer;
             font-weight: bold;
+            color: #000;
         }
 
         #feedbackMessage {
@@ -239,7 +309,7 @@
             font-size: 0.8rem;
             text-align: center;
             display: none;
-            padding: 5px;
+            padding: 8px;
             border-radius: 4px;
         }
         .success { background: rgba(16, 185, 129, 0.2); color: #10b981; }
@@ -248,14 +318,35 @@
 </head>
 <body>
 
-    <button class="toggle-btn" onclick="toggleSidebar()">☰ MENU</button>
+    <button class="toggle-btn toggle-left" onclick="toggleLeftSidebar()">☰ FILTROS</button>
+    <button class="toggle-btn toggle-right" onclick="toggleRightSidebar()">☰ LISTA</button>
 
-    <nav id="sidebar">
+    <nav id="left-sidebar" class="sidebar">
         <div class="search-container">
             <input type="text" id="searchBox" placeholder="Buscar jogo..." onkeyup="filterGames()">
         </div>
 
-        
+        <div class="categories-container">
+            <p style="color: var(--accent-color); font-weight: bold;">Categorias</p>
+            <label><input type="checkbox" value="arcade" checked onchange="filterGames()"> Arcade</label>
+            <label><input type="checkbox" value="aventura" checked onchange="filterGames()"> Aventura</label>
+            <label><input type="checkbox" value="educativo" checked onchange="filterGames()"> Educativo</label>
+            <label><input type="checkbox" value="multijogador" checked onchange="filterGames()"> Multijogador</label>
+            <label><input type="checkbox" value="ritmo" checked onchange="filterGames()"> Ritmo</label>
+            <label><input type="checkbox" value="horror" checked onchange="filterGames()"> Horror</label>
+            <label><input type="checkbox" value="acao" checked onchange="filterGames()"> Ação</label>
+            <label><input type="checkbox" value="secreto" checked onchange="filterGames()"> Secreto</label>
+        </div>
+
+        <div class="redeem-container">
+            <p style="font-size: 0.85rem; color: var(--accent-color); margin-bottom: 8px; font-weight: bold;">Possui um código?</p>
+            <input type="text" id="redeemInput" placeholder="Digite aqui...">
+            <button class="redeem-btn" onclick="redeemCode()">RESGATAR</button>
+            <div id="feedbackMessage"></div>
+        </div>
+    </nav>
+
+    <nav id="right-sidebar" class="sidebar">
         <ul class="game-list" id="sideList">
             <li class="game-item" data-name="Apostilas" data-category="educativo"><a href="https://exploitsroblox.github.io/apostilas">Apostilas</a></li>
             <li class="game-item" data-name="Geometry Dash Clicker" data-category="arcade"><a href="https://exploitsroblox.github.io/gdclicker">Geometry Dash Clicker</a></li>
@@ -268,7 +359,8 @@
             <li class="game-item" data-name="Geometry Dash Lite" data-category="arcade"><a href="https://exploitsroblox.github.io/gdl">Geometry Dash Lite</a></li>
             <li class="game-item" data-name="Among Us" data-category="multijogador"><a href="https://exploitsroblox.github.io/amongus">Among Us</a></li>
             <li class="game-item" data-name="FNAF 4" data-category="horror"><a href="https://exploitsroblox.github.io/fnaf">FNAF 4</a></li>
-            <li class="game-item" data-name="Subway Surfers" data-category="arcade"><a href="https://exploitsroblox.github.io/subway">Subway Surfers</a></li>
+            <li class="game-item" data-name="Subway Surfers" data-category="arcade">
+            <a href="https://exploitsroblox.github.io/subway">Subway Surfers</a></li>
             <li class="game-item" data-name="Super Mario 64" data-category="aventura"><a href="https://exploitsroblox.github.io/sm64/sm64">Super Mario 64</a></li>
             <li class="game-item" data-name="Snow Rider 3D" data-category="arcade"><a href="https://exploitsroblox.github.io/snowrider">Snow Rider 3D</a></li>
             <li class="game-item" data-name="Bad Time Simulator" data-category="horror"><a href="http://jcw87.github.io/c2-sans-fight/">Bad Time Simulator</a></li>
@@ -282,28 +374,16 @@
             <li class="game-item secret-hidden" id="side-secret2" data-name="Flappy Div" data-category="secreto"><a href="https://exploitsroblox.github.io/flappydiv">SECRETO: Flappy Div</a></li>
             <li class="game-item secret-hidden" id="side-secret3" data-name="Bruno" data-category="secreto"><a href="https://exploitsroblox.github.io/secret">SECRETO: Bruno</a></li>
         </ul>
-
-        <div class="redeem-container">
-            <p style="font-size: 0.8rem; color: var(--accent-color); margin-bottom: 5px;">Possui um código?</p>
-            <input type="text" id="redeemInput" placeholder="Digite aqui...">
-            <button class="redeem-btn" onclick="redeemCode()">RESGATAR</button>
-            <div id="feedbackMessage"></div>
-        </div>
     </nav>
 
     <main>
         <h1>Nexus Games</h1>
-        <div class="categories-container">
-            <p style="color: var(--accent-color); margin-bottom: 5px;">Categorias</p>
-            <label><input type="checkbox" value="arcade" checked onchange="filterGames()"> Arcade</label>
-            <label><input type="checkbox" value="aventura" checked onchange="filterGames()"> Aventura</label>
-            <label><input type="checkbox" value="educativo" checked onchange="filterGames()"> Educativo</label>
-            <label><input type="checkbox" value="multijogador" checked onchange="filterGames()"> Multijogador</label>
-            <label><input type="checkbox" value="ritmo" checked onchange="filterGames()"> Ritmo</label>
-            <label><input type="checkbox" value="horror" checked onchange="filterGames()"> Horror</label>
-            <label><input type="checkbox" value="acao" checked onchange="filterGames()"> Ação</label>
-            <label><input type="checkbox" value="secreto" checked onchange="filterGames()"> Secreto</label>
+        <span style="background: var(--accent-color); color: #000; padding: 5px 10px; width: fit-content; border-radius: 5px; font-weight: bold; margin-bottom: 10px;">DESTAQUE DA SEMANA</span>
+        <div class="featured-banner" onclick="window.location.href='https://exploitsroblox.github.io/1234players'">
+            <h2 style="margin: 0; font-size: 2rem;">1234 Players Games</h2>
+            <p style="margin: 5px 0 0 0;">Se divirta com seus amigos sem precisar de vários dispositívos</p>
         </div>
+
         <div class="grid-container" id="gameGrid">
             <a href="https://exploitsroblox.github.io/apostilas" class="game-card" data-name="Apostilas" data-category="educativo">
                 <img src="apostila.png" alt="Apostilas">
@@ -424,36 +504,60 @@
                 <span>Flappy Div (Secreto)</span>
             </a>
         </div>
+         <button class="lucky-btn" onclick="imFeelingLucky()">
+            <span>🎲</span> ESTOU COM SORTE
+        </button>
     </main>
 
     <script>
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('active');
+        function toggleLeftSidebar() {
+            document.getElementById('left-sidebar').classList.toggle('active');
+            document.body.classList.toggle('left-active');
+            
+            // Opcional: fechar o direito ao abrir o esquerdo para não espremer a tela
+            if(document.body.classList.contains('right-active')) {
+                toggleRightSidebar();
+            }
+        }
+
+        function toggleRightSidebar() {
+            document.getElementById('right-sidebar').classList.toggle('active');
+            document.body.classList.toggle('right-active');
+            
+            // Opcional: fechar o esquerdo ao abrir o direito
+            if(document.body.classList.contains('left-active')) {
+                toggleLeftSidebar();
+            }
         }
 
         function filterGames() {
             const query = document.getElementById('searchBox').value.toLowerCase();
             const selectedCats = Array.from(document.querySelectorAll('.categories-container input[type="checkbox"]:checked')).map(cb => cb.value);
 
+            // Filtrar cards do centro
             const cards = document.querySelectorAll('.game-card');
             cards.forEach(card => {
                 const name = card.getAttribute('data-name').toLowerCase();
                 const cat = (card.getAttribute('data-category') || '').toLowerCase();
                 const matchesSearch = name.includes(query);
                 const matchesCat = selectedCats.length === 0 || selectedCats.includes(cat);
+                
                 if (!card.classList.contains('secret-hidden')) {
                     card.classList.toggle('hidden', !(matchesSearch && matchesCat));
                 }
             });
 
-            // também filtrar lista lateral
+            // Filtrar lista lateral
             const items = document.querySelectorAll('.game-item');
             items.forEach(item => {
                 const name = (item.getAttribute('data-name') || item.textContent).toLowerCase();
                 const cat = (item.getAttribute('data-category') || '').toLowerCase();
                 const matchesSearch = name.includes(query);
                 const matchesCat = selectedCats.length === 0 || selectedCats.includes(cat);
-                item.classList.toggle('hidden', !(matchesSearch && matchesCat));
+                
+                if (!item.classList.contains('secret-hidden')) {
+                    item.classList.toggle('hidden', !(matchesSearch && matchesCat));
+                }
             });
         }
 
@@ -461,7 +565,7 @@
         const DATABASE_CODES = {
             "GULOSO": "secret1",
             "FLAPPYDIV": "secret2",
-            "BRUNO": "secret3" // Você pode ter vários códigos para o mesmo jogo
+            "BRUNO": "secret3"
         };
 
         function redeemCode() {
@@ -487,6 +591,32 @@
             }
         }
 
+        function checkAchievements() {
+            // Explorador
+            if (parseInt(localStorage.getItem('game_clicks') || '0') >= 5) {
+                document.getElementById('ach-explorer').classList.add('unlocked');
+            }
+            // Mestre dos Segredos
+            if (localStorage.getItem('secret1') === 'unlocked') {
+                document.getElementById('ach-secret').classList.add('unlocked');
+            }
+            // Sortudo
+            if (localStorage.getItem('lucky_used') === 'true') {
+                document.getElementById('ach-lucky').classList.add('unlocked');
+            }
+        }
+        function imFeelingLucky() {
+            const cards = Array.from(document.querySelectorAll('.game-card:not(.hidden):not(.secret-hidden)'));
+            if (cards.length > 0) {
+                const randomCard = cards[Math.floor(Math.random() * cards.length)];
+                localStorage.setItem('lucky_used', 'true');
+                window.location.href = randomCard.href;
+            }
+        }
+        function trackClick() {
+            let clicks = parseInt(localStorage.getItem('game_clicks') || '0');
+            localStorage.setItem('game_clicks', clicks + 1);
+        }
         function unlockGame(id) {
             // Mostra no Grid
             const gameCard = document.getElementById(id);
@@ -495,6 +625,10 @@
             // Mostra na Sidebar
             const sideItem = document.getElementById('side-' + id);
             if (sideItem) sideItem.classList.remove('secret-hidden');
+            
+            // Re-aplica os filtros para garantir que o jogo secreto recém desbloqueado obedeça ao estado atual
+            filterGames();
+            checkAchievements();
         }
 
         // Verificar jogos já desbloqueados ao abrir a página
@@ -505,6 +639,7 @@
                 }
             });
             filterGames(); // aplica filtro inicial de categorias/pesquisa
+            checkAchievements(); // verifica conquistas ao carregar
         };
     </script>
 </body>
