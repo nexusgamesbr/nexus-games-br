@@ -6,16 +6,22 @@
     <title>Sala Do Futuro Aluno</title>
     <link rel="icon" href="favicon.png" type="image/png">
     <style>
+
         :root {
-            --sidebar-width: 300px;
-            --bg-dark: #0f172a;
-            --sidebar-bg: #1e293b;
-            --accent-color: #2bbcff;
-            --text-color: #f8fafc;
-            --card-bg: #1e293b;
-            --success-color: #10b981;
-            --error-color: #ef4444;
-        }
+    --sidebar-width: 300px;
+    --bg-dark: #0f0a1a;        /* Roxo quase preto para o fundo */
+    --sidebar-bg: #1a102e;     /* Roxo escuro para os menus */
+    --accent-color: #a855f7;    /* Roxo vibrante (estilo Twitch/Neon) */
+    --text-color: #f8fafc;     /* Branco levemente azulado */
+    --card-bg: #24143d;        /* Roxo médio para os cards */
+    --success-color: #22c55e;   /* Verde mantido para sucesso */
+    --error-color: #ff4646;     /* Vermelho para erro */
+    --gold: #ffd700; 
+    --rainbow: (#ff0000, #ff8000, #ffff00, #00ff00, #00ffff, #0000ff, #8000ff);          /* Dourado para as conquistas */
+    
+    /* Adicional: uma cor para dar profundidade aos hovers */
+    --accent-hover: #c084fc; 
+}
 
         body {
             margin: 0;
@@ -26,7 +32,85 @@
             min-height: 100vh;
             overflow-x: hidden;
         }
+        /* Novos botões de Ação Superior */
+        .top-actions {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 999;
+        }
 
+        .action-btn {
+            background: var(--card-bg);
+            color: var(--text-color);
+            border: 1px solid var(--accent-color);
+            padding: 10px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.3s;
+            text-transform: uppercase;
+        }
+
+        .action-btn:hover {
+            background: var(--accent-color);
+            color: #000;
+            box-shadow: 0 0 15px var(--accent-color);
+        }
+
+        /* Destaque para o botão de Login */
+        .btn-auth {
+    /* Criamos um fundo duplo: o primeiro é a cor do botão, o segundo é o gradiente */
+    background: linear-gradient(var(--card-bg), var(--card-bg)) padding-box, 
+                linear-gradient(90deg, #e10000, #ff8a04, #fbff00ee, #55ff00, #00d4ff, #001eff, #7700ff, #ff00ccee, #e10000) border-box;
+    
+    /* A borda precisa ser transparente para o gradiente de baixo aparecer */
+    border: 2px solid transparent; 
+    border-radius: 8px;
+    
+    /* Aumentamos o tamanho do fundo para a animação ter para onde correr */
+    background-size: 200% 100%;
+    
+    /* Aplicamos a animação que você já criou */
+    animation: flow 3s linear infinite;
+    
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-auth:hover {
+    transform: scale(1.05) translateX(-50%); /* O translateX mantém o alinhamento central */
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+}.btn-auth {
+    /* Criamos um fundo duplo: o primeiro é a cor do botão, o segundo é o gradiente */
+    background: linear-gradient(var(--card-bg), var(--card-bg)) padding-box, 
+                linear-gradient(90deg, #e10000, #ff8a04, #fbff00ee, #55ff00, #00d4ff, #001eff, #7700ff, #ff00ccee, #e10000) border-box;
+    
+    /* A borda precisa ser transparente para o gradiente de baixo aparecer */
+    border: 2px solid transparent; 
+    border-radius: 8px;
+    
+    /* Aumentamos o tamanho do fundo para a animação ter para onde correr */
+    background-size: 200% 100%;
+    
+    /* Aplicamos a animação que você já criou */
+    animation: flow 3s linear infinite;
+    
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-auth:hover {
+    transform: scale(1.05) translateX(0%); /* O translateX mantém o alinhamento central */
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+}
+
+        /* Estilo para a medalha de conquistas */
         /* --- Barras Laterais (Base) --- */
         .sidebar {
             position: fixed;
@@ -122,7 +206,7 @@
 
         /* --- Botão Estou com Sorte --- */
         .lucky-btn {
-            background: linear-gradient(90deg, #e10000, #ff8a04, #fbff00ee, #55ff00, #00d4ff, #001eff, #7700ff, #ff00ccee, #e10000);
+            background: var(--gold);
             color: #ffffff;
             border: none;
             padding: 10px 15px;
@@ -130,6 +214,7 @@
             font-weight: bold;
             cursor: pointer;
             margin-bottom: 20px;
+            margin-top: 20px;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -314,18 +399,69 @@
         }
         .success { background: rgba(16, 185, 129, 0.2); color: #10b981; }
         .error { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+        /* --- Sistema de Modal (Janela) --- */
+.modal {
+    display: none; /* Escondido por padrão */
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background: var(--sidebar-bg);
+    padding: 30px;
+    border-radius: 15px;
+    border: 2px solid var(--gold);
+    width: 90%;
+    max-width: 400px;
+    position: relative;
+    box-shadow: 0 0 30px rgba(255, 215, 0, 0.2);
+}
+
+.close-modal {
+    position: absolute;
+    right: 15px;
+    top: 10px;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--text-color);
+}
+
+.close-modal:hover {
+    color: var(--error-color);
+}
+
+/* Ajuste das conquistas dentro da janela */
+.modal .achievements-container {
+    background: transparent;
+    padding: 0;
+    margin-top: 20px;
+}
     </style>
 </head>
 <body>
 
     <button class="toggle-btn toggle-left" onclick="toggleLeftSidebar()">☰ FILTROS</button>
     <button class="toggle-btn toggle-right" onclick="toggleRightSidebar()">☰ LISTA</button>
-
+   <div class="top-actions">
+    <button id="auth-main-btn" class="action-btn btn-auth" onclick="window.location.href='login.html'">
+        <span>👤</span> ENTRAR / CRIAR CONTA
+    </button>
+    <button id="auth-main-btn" class="action-btn btn-auth" onclick="logOut()">
+        <span>👤</span> SAIR
+    </button>
+</div>
     <nav id="left-sidebar" class="sidebar">
         <div class="search-container">
             <input type="text" id="searchBox" placeholder="Buscar jogo..." onkeyup="filterGames()">
         </div>
-
         <div class="categories-container">
             <p style="color: var(--accent-color); font-weight: bold;">Categorias</p>
             <label><input type="checkbox" value="arcade" checked onchange="filterGames()"> Arcade</label>
@@ -345,6 +481,7 @@
             <div id="feedbackMessage"></div>
         </div>
     </nav>
+    
 
     <nav id="right-sidebar" class="sidebar">
         <ul class="game-list" id="sideList">
@@ -507,6 +644,12 @@
          <button class="lucky-btn" onclick="imFeelingLucky()">
             <span>🎲</span> ESTOU COM SORTE
         </button>
+        <div class="achievements-container">
+            <p style="color: var(--gold); font-size: 0.9rem; font-weight: bold; margin-bottom: 10px;">Suas Conquistas</p>
+            <div class="achievement" id="ach-explorer"><span>🕵️</span> Explorador (Abriu 5 jogos)</div>
+            <div class="achievement" id="ach-secret"><span>🔓</span> Mestre dos Segredos</div>
+            <div class="achievement" id="ach-lucky"><span>🎲</span> Sortudo do Dia</div>
+        </div>
     </main>
 
     <script>
@@ -528,6 +671,16 @@
             if(document.body.classList.contains('left-active')) {
                 toggleLeftSidebar();
             }
+        }
+        function scrollToAchievements() {
+            const container = document.querySelector('.achievements-container');
+            container.scrollIntoView({ behavior: 'smooth' });
+            
+            // Pequeno efeito visual de brilho ao chegar
+            container.style.boxShadow = "0 0 20px var(--gold)";
+            setTimeout(() => {
+                container.style.boxShadow = "none";
+            }, 1000);
         }
 
         function filterGames() {
@@ -613,6 +766,65 @@
                 window.location.href = randomCard.href;
             }
         }
+        function logOut() {
+            // Limpa dados de autenticação (exemplo)
+            localStorage.removeItem('username');
+            localStorage.removeItem('password');
+            localStorage.removeItem('lucky_used');
+            localStorage.removeItem('secret1');
+            localStorage.removeItem('secret2');
+            localStorage.removeItem('secret3');
+            localStorage.setItem('loggedIn', 'false');
+            // Redireciona para a página de login
+            window.location.reload();
+        }
+        
+        const API_URL = 'http://localhost:3000';
+
+async function saveAchievements() {
+    const user = localStorage.getItem("loggedUser") || localStorage.getItem("username");
+    if (!user) return; // Não tenta salvar se não estiver logado
+
+    const achievements = {
+        explorer: document.getElementById('ach-explorer').classList.contains('unlocked'),
+        secret: document.getElementById('ach-secret').classList.contains('unlocked'),
+        lucky: document.getElementById('ach-lucky').classList.contains('unlocked')
+    };
+
+    // Salva local primeiro (para velocidade)
+    localStorage.setItem('user_achievements', JSON.stringify(achievements));
+
+    // Sincroniza com o servidor
+    try {
+        await fetch(`${API_URL}/save-achievements`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ usuario: user, conquistas: achievements })
+        });
+        console.log("Nuvem atualizada!");
+    } catch (err) {
+        console.error("Erro de conexão com o servidor");
+    }
+}
+
+async function syncAchievements() {
+    const user = localStorage.getItem("loggedIn") || localStorage.getItem("username");
+    if (!user) return;
+
+    try {
+        const response = await fetch(`${API_URL}/get-achievements/${user}`);
+        const achievements = await response.json();
+
+        if (achievements.explorer) document.getElementById('ach-explorer').classList.add('unlocked');
+        if (achievements.secret) document.getElementById('ach-secret').classList.add('unlocked');
+        if (achievements.lucky) document.getElementById('ach-lucky').classList.add('unlocked');
+        
+        // Atualiza o local storage com o que veio do servidor
+        localStorage.setItem('user_achievements', JSON.stringify(achievements));
+    } catch (err) {
+        console.error("Erro ao buscar conquistas do servidor");
+    }
+}
         function trackClick() {
             let clicks = parseInt(localStorage.getItem('game_clicks') || '0');
             localStorage.setItem('game_clicks', clicks + 1);
@@ -630,7 +842,6 @@
             filterGames();
             checkAchievements();
         }
-
         // Verificar jogos já desbloqueados ao abrir a página
         window.onload = function() {
             Object.values(DATABASE_CODES).forEach(gameId => {

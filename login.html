@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Acesso Purple</title>
+    <style>
+        :root {
+            --bg-dark: #0f0a1a;       
+            --sidebar-bg: #1a102e;    
+            --accent-color: #a855f7;    
+            --text-color: #f8fafc;   
+            --card-bg: #24143d;      
+            --input-bg: #1a102e;
+            --error-color: #ef4444;
+            --success-color: #22c55e;
+        }
+
+        * { box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+        body { 
+            background-color: var(--bg-dark); 
+            color: var(--text-color);
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            margin: 0; 
+        }
+        
+        .container { 
+            background: var(--card-bg); 
+            padding: 2.5rem; 
+            border-radius: 12px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5); 
+            width: 100%; 
+            max-width: 400px; 
+            border: 1px solid rgba(168, 85, 247, 0.2);
+        }
+
+        h2 { text-align: center; margin-bottom: 1.5rem; letter-spacing: 1px; }
+        
+        .form-group { margin-bottom: 1.2rem; }
+
+        label { display: block; margin-bottom: 0.5rem; font-size: 0.9rem; color: #cbd5e1; }
+
+        input { 
+            width: 100%; 
+            padding: 12px; 
+            border: 1px solid rgba(168, 85, 247, 0.3); 
+            border-radius: 8px; 
+            background-color: var(--input-bg);
+            color: var(--text-color);
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus { border-color: var(--accent-color); box-shadow: 0 0 8px rgba(168, 85, 247, 0.4); }
+        
+        button { 
+            width: 100%; padding: 12px; border: none; border-radius: 8px; 
+            background-color: var(--accent-color); color: white; 
+            font-weight: bold; cursor: pointer; transition: 0.2s; margin-top: 10px;
+        }
+
+        button:hover { background-color: #9333ea; transform: translateY(-1px); }
+        
+        .message { font-size: 0.85rem; text-align: center; margin-top: 10px; min-height: 1.2rem; }
+        .error { color: var(--error-color); }
+        .success { color: var(--success-color); }
+
+        .toggle-link { 
+            text-align: center; margin-top: 1.5rem; font-size: 0.85rem; 
+            color: #a1a1aa; cursor: pointer; text-decoration: underline;
+        }
+
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="login-section">
+        <h2>LOGIN</h2>
+        <div id="login-msg" class="message"></div>
+        <form id="login-form">
+            <div class="form-group">
+                <label>Usuário</label>
+                <input type="text" id="login-user" placeholder="Seu nome" required>
+            </div>
+            <div class="form-group">
+                <label>Senha</label>
+                <input type="password" id="login-pass" placeholder="Sua senha" required>
+            </div>
+            <button type="submit">ENTRAR</button>
+        </form>
+        <p class="toggle-link" onclick="toggleForm()">Não tem conta? Crie uma aqui</p>
+    </div>
+
+    <div id="register-section" class="hidden">
+        <h2>CADASTRO</h2>
+        <div id="reg-msg" class="message"></div>
+        <form id="register-form">
+            <div class="form-group">
+                <label>Escolha um nome</label>
+                <input type="text" id="reg-user" placeholder="Ex: Admin" required>
+            </div>
+            <div class="form-group">
+                <label>Defina uma senha</label>
+                <input type="password" id="reg-pass" placeholder="Mínimo 4 caracteres" required>
+            </div>
+            <button type="submit" style="background-color: #7c3aed;">CRIAR CONTA</button>
+        </form>
+        <p class="toggle-link" onclick="toggleForm()">Já é cadastrado? Volte ao login</p>
+    </div>
+</div>
+
+<script>
+    const API_URL = 'http://localhost:3000';
+
+function toggleForm() {
+    document.getElementById('login-section').classList.toggle('hidden');
+    document.getElementById('register-section').classList.toggle('hidden');
+}
+
+
+// LÓGICA DE CADASTRO NO SERVIDOR
+document.getElementById('register-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const usuario = document.getElementById('reg-user').value;
+    const senha = document.getElementById('reg-pass').value;
+    const msg = document.getElementById('reg-msg');
+
+    try {
+        const response = await fetch(`${API_URL}/registrar`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ usuario, senha })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            msg.innerText = data.mensagem;
+            msg.className = "message success";
+            setTimeout(toggleForm, 1500);
+            localStorage.setItem("loggedIn", "true"); 
+            localStorage.setItem("username", usuario);
+            localStorage.setItem("password", senha);
+            window.location.href = 'index.html'; 
+        } else {
+            msg.innerText = data.erro;
+            msg.className = "message error";
+        }
+    } catch (err) {
+        msg.innerText = "Erro ao conectar com o servidor.";
+    }
+});
+
+// LÓGICA DE LOGIN NO SERVIDOR
+document.getElementById('login-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const usuario = document.getElementById('login-user').value;
+    const senha = document.getElementById('login-pass').value;
+    const msg = document.getElementById('login-msg');
+
+    try {
+        const response = await fetch(`${API_URL}/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ usuario, senha })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            msg.innerText = data.mensagem;
+            msg.className = "message success";
+            alert(data.mensagem);
+            localStorage.setItem("loggedIn", "true"); 
+            window.location.href = 'index.html'; 
+            localStorage.setItem("username", usuario);
+            localStorage.setItem("password", senha);
+        } else {
+            msg.innerText = data.erro;
+            msg.className = "message error";
+        }
+    } catch (err) {
+        msg.innerText = "Servidor offline.";
+    }
+});
+</script>
+
+</body>
+</html>
