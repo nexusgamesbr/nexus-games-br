@@ -413,7 +413,26 @@
     align-items: center;
     justify-content: center;
 }
-
+.atua h2 {
+   font-size: 1.5rem;
+            margin-bottom: 40px;
+            margin-top: 30px;
+            background: linear-gradient(90deg, #ff0000, #df6c00,#d2e900ef, #09ff00, #00fcfc, #001eff, #7700ff, #ff00ccee, #ff0000);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 200%;
+            font-family: "Minecraftia", cursive;
+            font-weight: normal;
+            padding: 10px 20px;
+            animation: flow 5s linear infinite;
+            text-align: center;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+}
+.atua h2:hover {
+    transform: scale(1.05);
+    transition: transform 0.2s;
+}
 .modal-content {
     background: var(--sidebar-bg);
     padding: 30px;
@@ -684,6 +703,7 @@
                 <img src="secret.jpg" alt="Jogos Indexados">
                 <span>Jogos Indexados (Secreto)</span>
             </a>
+            
         </div>
          <button class="lucky-btn" onclick="imFeelingLucky()">
             <span>🎲</span> ESTOU COM SORTE
@@ -693,6 +713,9 @@
             <div class="achievement" id="ach-explorer"><span>🕵️</span> Explorador (Abriu 5 jogos)</div>
             <div class="achievement" id="ach-secret"><span>🔓</span> Mestre dos Segredos</div>
             <div class="achievement" id="ach-lucky"><span>🎲</span> Sortudo do Dia</div>
+        </div>
+        <div class="atua">
+         <h2>Atualizado Dia 21/03/2026</h2>
         </div>
     </main>
 
