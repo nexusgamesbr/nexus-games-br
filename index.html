@@ -167,28 +167,37 @@
             cursor: pointer;
         }
         .achievements-container {
-            margin-top: 15px;
-            padding: 10px;
-            background: rgba(0,0,0,0.2);
-            border-radius: 8px;
+             position: fixed;          /* fixa no viewport */
+    top: 50%;                 /* posiciona no meio vertical */
+    left: 50%;                /* posiciona no meio horizontal */
+    transform: translate(-50%, -50%); /* corrige o deslocamento */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    z-index: 1001;
+    background-image: url('ach-bg.png'); /* imagem de fundo temática */
+    padding: 50px;             /* opcional: espaçamento interno */
+    border-radius: 10px;       /* opcional: cantos arredondados */
+    border: 2px solid #000;
         }
         .achievement {
             display: flex;
             align-items: center;
             gap: 10px;
             font-size: 0.8rem;
-            margin-bottom: 8px;
-            opacity: 0.3;
+            margin-bottom: 0px;
+            opacity: 0;
             transition: 0.3s;
         }
         .achievement.unlocked { opacity: 1; color: var(--gold); }
 
         /* --- Destaque da Semana --- */
         .featured-banner {
-            width: 100%;
+            width: 80%;
             max-width: 1200px;
-            height: 200px;
-            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.7)), url('1234logo.jpg');
+            height: 300px;
+            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.7)), url('survival-logo.png');
             background-size: cover;
             background-position: center;
             border-radius: 15px;
@@ -289,6 +298,21 @@
 
         .toggle-left { left: 20px; }
         .toggle-right { right: 20px; }
+        .achievements-btn {  
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: var(--gold);
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            z-index: 1001;
+            color: #000;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            transition: transform 0.2s;
+        }
 
         /* Empurra o conteúdo quando as sidebars estão abertas */
         body.left-active main { margin-left: var(--sidebar-width); }
@@ -342,7 +366,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding-bottom: 15px;
+            padding-bottom: 5px;
         }
 
         .game-card:hover {
@@ -358,7 +382,7 @@
         }
 
         .game-card span {
-            margin-top: 15px;
+            margin-top: 5px;
             font-weight: bold;
             text-align: center;
         }
@@ -413,6 +437,7 @@
     align-items: center;
     justify-content: center;
 }
+
 .atua h2 {
    font-size: 1.5rem;
             margin-bottom: 40px;
@@ -469,14 +494,10 @@
 
     <button class="toggle-btn toggle-left" onclick="toggleLeftSidebar()">☰ FILTROS</button>
     <button class="toggle-btn toggle-right" onclick="toggleRightSidebar()">☰ LISTA</button>
-   <div class="top-actions">
-    <button id="auth-main-btn" class="action-btn btn-auth" onclick="window.location.href='login.html'">
-        <span>👤</span> ENTRAR / CRIAR CONTA
-    </button>
-    <button id="auth-main-btn" class="action-btn btn-auth" onclick="logOut()">
-        <span>👤</span> SAIR
-    </button>
-</div>
+    <button class="achievements-btn" onclick="toggleAchievements()">Conquistas</button>
+    <div class="detetiveimg" style="position: fixed; bottom: -70px; left: 50%; transform: translateX(-50%); z-index: 1001; pointer-events: none;">
+        <img src="detetive.png" alt="Detetive" >
+    </div>
     <nav id="left-sidebar" class="sidebar">
         <div class="search-container">
             <input type="text" id="searchBox" placeholder="Buscar jogo..." onkeyup="filterGames()">
@@ -534,12 +555,13 @@
 
     <main>
         <div id="title">
-         <h1>Nexus Games</h1>
+         <!-- <h1>Nexus Games</h1> -->
+          <img src="logo.png" alt="logo do título" style="width: 600px; height: 200px; margin-bottom: 20px;">
         </div>
         <span style="background: var(--accent-color); color: #000; padding: 5px 10px; width: fit-content; border-radius: 5px; font-weight: bold; margin-bottom: 10px;">DESTAQUE DA SEMANA</span>
-        <div class="featured-banner" onclick="window.location.href='https://exploitsroblox.github.io/1234players'">
-            <h2 style="margin: 0; font-size: 2rem;">1234 Players Games</h2>
-            <p style="margin: 5px 0 0 0;">Se divirta com seus amigos sem precisar de vários dispositívos</p>
+        <div class="featured-banner" onclick="destaque()">
+            <h2 style="margin: 0; font-size: 2rem;">Survival Racing Drift</h2>
+            <p style="margin: 5px 0 0 0;">Voe e corre para derrotar inimigos!</p>
         </div>
 
         <div class="grid-container" id="gameGrid">
@@ -600,6 +622,11 @@
             <a href="https://exploitsroblox.github.io/gdl" class="game-card" data-name="Geometry Dash Lite" data-category="arcade">
                 <img src="geoemetrydash.png" alt="Geometry Dash Lite">
                 <span>Geometry Dash Lite</span>
+            </a>
+
+            <a href="https://exploitsroblox.github.io/deltarune" class="game-card" data-name="Deltarune" data-category="arcade">
+                <img src="deltarune.jpg" alt="Deltarune">
+                <span>Deltarune</span>
             </a>
 
             <a href="https://exploitsroblox.github.io/amongus" class="game-card" data-name="Among Us" data-category="multijogador">
@@ -708,14 +735,12 @@
          <button class="lucky-btn" onclick="imFeelingLucky()">
             <span>🎲</span> ESTOU COM SORTE
         </button>
-        <div class="achievements-container">
-            <p style="color: var(--gold); font-size: 0.9rem; font-weight: bold; margin-bottom: 10px;">Suas Conquistas</p>
-            <div class="achievement" id="ach-explorer"><span>🕵️</span> Explorador (Abriu 5 jogos)</div>
-            <div class="achievement" id="ach-secret"><span>🔓</span> Mestre dos Segredos</div>
-            <div class="achievement" id="ach-lucky"><span>🎲</span> Sortudo do Dia</div>
+        <div class="achievements-container" style="display: none;" active="false">
+            <p style="color: var(--text-color); font-size: 1.9rem; font-weight: bold; margin-bottom: 10px;">Suas Conquistas</p>
+            <div class="achievement" id="ach-detetive"><img src="detetive.png" alt="aa"></div>
         </div>
         <div class="atua">
-         <h2>Atualizado Dia 21/03/2026</h2>
+         <h2>Atualizado Dia 23/03/2026</h2>
         </div>
     </main>
 
@@ -739,17 +764,7 @@
                 toggleLeftSidebar();
             }
         }
-        function scrollToAchievements() {
-            const container = document.querySelector('.achievements-container');
-            container.scrollIntoView({ behavior: 'smooth' });
-            
-            // Pequeno efeito visual de brilho ao chegar
-            container.style.boxShadow = "0 0 20px var(--gold)";
-            setTimeout(() => {
-                container.style.boxShadow = "none";
-            }, 1000);
-        }
-
+        
         function filterGames() {
             const query = document.getElementById('searchBox').value.toLowerCase();
             const selectedCats = Array.from(document.querySelectorAll('.categories-container input[type="checkbox"]:checked')).map(cb => cb.value);
@@ -811,19 +826,16 @@
                 feedback.style.display = "block";
             }
         }
-
+        function toggleAchievements() {
+            const container = document.querySelector('.achievements-container');
+            const isActive = container.getAttribute('active') === "true";
+            container.style.display = isActive ? 'none' : 'block';
+            container.setAttribute('active', (!isActive).toString());
+         }
         function checkAchievements() {
-            // Explorador
-            if (parseInt(localStorage.getItem('game_clicks') || '0') >= 5) {
-                document.getElementById('ach-explorer').classList.add('unlocked');
-            }
-            // Mestre dos Segredos
-            if (localStorage.getItem('secret1') === 'unlocked') {
-                document.getElementById('ach-secret').classList.add('unlocked');
-            }
-            // Sortudo
-            if (localStorage.getItem('lucky_used') === 'true') {
-                document.getElementById('ach-lucky').classList.add('unlocked');
+            // Detetive
+            if (localStorage.getItem('destaque') > 0) {
+                document.getElementById('ach-detetive').classList.add('unlocked');
             }
         }
         function imFeelingLucky() {
@@ -834,69 +846,58 @@
                 window.location.href = randomCard.href;
             }
         }
-        function logOut() {
-            // Limpa dados de autenticação (exemplo)
-            localStorage.removeItem('username');
-            localStorage.removeItem('password');
-            localStorage.removeItem('lucky_used');
-            localStorage.removeItem('secret1');
-            localStorage.removeItem('secret2');
-            localStorage.removeItem('secret3');
-            localStorage.setItem('loggedIn', 'false');
-            // Redireciona para a página de login
-            window.location.reload();
-        }
-        
-        const API_URL = 'http://localhost:3000';
+        function destaque() {
+    // Incrementa o contador de destaque
+    let valor = parseInt(localStorage.getItem('destaque') || '0');
+    valor++;
+    localStorage.setItem('destaque', valor);
 
-async function saveAchievements() {
-    const user = localStorage.getItem("loggedUser") || localStorage.getItem("username");
-    if (!user) return; // Não tenta salvar se não estiver logado
+    // Checa conquistas
+    checkAchievements();
 
-    const achievements = {
-        explorer: document.getElementById('ach-explorer').classList.contains('unlocked'),
-        secret: document.getElementById('ach-secret').classList.contains('unlocked'),
-        lucky: document.getElementById('ach-lucky').classList.contains('unlocked')
-    };
-
-    // Salva local primeiro (para velocidade)
-    localStorage.setItem('user_achievements', JSON.stringify(achievements));
-
-    // Sincroniza com o servidor
-    try {
-        await fetch(`${API_URL}/save-achievements`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ usuario: user, conquistas: achievements })
-        });
-        console.log("Nuvem atualizada!");
-    } catch (err) {
-        console.error("Erro de conexão com o servidor");
+    // Se for a primeira vez (valor == 1), roda animação e redireciona após 3s
+    if (valor === 1) {
+        destaqueAnimation();
+        setTimeout(() => {
+            window.location.href = 'https://exploitsroblox.github.io/survival';
+        }, 3000);
+    } else {
+        // Caso contrário, redireciona imediatamente
+        window.location.href = 'https://exploitsroblox.github.io/survival';
     }
 }
 
-async function syncAchievements() {
-    const user = localStorage.getItem("loggedIn") || localStorage.getItem("username");
-    if (!user) return;
-
-    try {
-        const response = await fetch(`${API_URL}/get-achievements/${user}`);
-        const achievements = await response.json();
-
-        if (achievements.explorer) document.getElementById('ach-explorer').classList.add('unlocked');
-        if (achievements.secret) document.getElementById('ach-secret').classList.add('unlocked');
-        if (achievements.lucky) document.getElementById('ach-lucky').classList.add('unlocked');
-        
-        // Atualiza o local storage com o que veio do servidor
-        localStorage.setItem('user_achievements', JSON.stringify(achievements));
-    } catch (err) {
-        console.error("Erro ao buscar conquistas do servidor");
-    }
-}
-        function trackClick() {
-            let clicks = parseInt(localStorage.getItem('game_clicks') || '0');
-            localStorage.setItem('game_clicks', clicks + 1);
+        function destaqueAnimation() {
+            const banner = document.New
+            banner.style.transition = 'transform 0.5s, box-shadow 0.5s';
+            banner.style.transform = 'scale(1.1)';
+            banner.style.boxShadow = '0 0 40px rgba(255, 215, 0, 0.7)';
+            setTimeout(() => {
+                banner.style.transform = 'scale(1)';
+                banner.style.boxShadow = '0 0 30px rgba(255, 215, 0, 0.2)';
+            }, 500);
         }
+        function destaqueAnimation() {
+    const detetiveDiv = document.querySelector('.detetiveimg');
+
+    if (!detetiveDiv) return;
+
+    // Define a transição suave
+    detetiveDiv.style.transition = 'transform 0.5s ease-out';
+
+    // Move a div para cima (aparecendo)
+    detetiveDiv.style.transform = 'translate(-50%, -100px)';
+
+    // Toca o som
+    const audio = new Audio('achi.mp3');
+    audio.play();
+
+    // Depois de 3 segundos, volta para baixo
+    setTimeout(() => {
+        detetiveDiv.style.transform = 'translate(-50%, 0)';
+    }, 3000);
+}
+
         function unlockGame(id) {
             // Mostra no Grid
             const gameCard = document.getElementById(id);
