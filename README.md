@@ -1,3 +1,4 @@
+<img width="1039" height="291" alt="logo" src="https://github.com/user-attachments/assets/2df376e3-fc1a-425f-baa0-68be6532079b" />
 Um projeto desenvolvido para reunir diversão e tecnologia em um só lugar! Este repositório contém o código-fonte de um site dedicado a jogos online, com foco em interatividade, design responsivo e experiência do usuário.
 
 ✨ Funcionalidades
@@ -18,3 +19,4 @@ Frameworks e bibliotecas adicionais (dependendo da implementação).
 
 🎯 Objetivo
 O projeto tem como objetivo oferecer uma plataforma simples e divertida para explorar diferentes jogos, além de servir como prática de desenvolvimento web e integração de recursos interativos.
+
