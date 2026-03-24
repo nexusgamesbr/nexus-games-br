@@ -488,10 +488,10 @@
     padding: 0;
     margin-top: 20px;
 }
+
     </style>
 </head>
 <body>
-
     <button class="toggle-btn toggle-left" onclick="toggleLeftSidebar()">☰ FILTROS</button>
     <button class="toggle-btn toggle-right" onclick="toggleRightSidebar()">☰ LISTA</button>
     <button class="achievements-btn" onclick="toggleAchievements()">Conquistas</button>
@@ -730,6 +730,11 @@
                 <img src="secret.jpg" alt="Jogos Indexados">
                 <span>Jogos Indexados (Secreto)</span>
             </a>
+
+            <a href="https://exploitsroblox.github.io/flash" class="game-card secret-hidden" id="secret5" data-name="Flash Games" data-category="secreto">
+                <img src="flash.png" alt="Jogos Flash">
+                <span>Jogos Flash (Secreto)</span>
+            </a>
             
         </div>
          <button class="lucky-btn" onclick="imFeelingLucky()">
@@ -801,7 +806,8 @@
             "GULOSO": "secret1",
             "FLAPPYDIV": "secret2",
             "BRUNO": "secret3",
-            "INDEX": "secret4"
+            "INDEX": "secret4",
+            "FLASH": "secret5"
         };
 
         function redeemCode() {
