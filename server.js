@@ -9,7 +9,7 @@ app.use(cors());
 
 // 1. CONEXÃO COM O BANCO DE DADOS
 // Substitua 'SEU_USUARIO', 'SUA_SENHA' e o 'LINK_DO_CLUSTER' pelo que você copiou do MongoDB
-const dbURI = "mongodb+srv://supergodmodeo_db_user:GI32EbVXZ86pCVu1@nexusgames.pmdhf78.mongodb.net/?appName=nexusgames";
+const dbURI = "mongodb+srv://supergodmodeo_db_user:QE47pW7qv5IEAPjE@nexusgames.96iuubq.mongodb.net/?appName=nexusgames";
 
 mongoose.connect(dbURI)
   .then(() => console.log("✅ Conectado ao MongoDB Atlas!"))
@@ -24,80 +24,35 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', userSchema);
 
-// 3. ROTA DE REGISTRO (CADASTRO)
-app.post('/registrar', async (req, res) => {
-    const { usuario, senha } = req.body;
+// Modelo de backup
+const Backup = mongoose.model('Backup', new mongoose.Schema({
+  usuario: String,
+  dados: String,
+  atualizadoEm: { type: Date, default: Date.now }
+}));
 
-    try {
-        // Verifica se o usuário já existe no banco
-        const usuarioExiste = await User.findOne({ usuario });
-        if (usuarioExiste) {
-            return res.status(400).json({ erro: "Este nome de usuário já está em uso." });
-        }
+// Rota para salvar backup
+app.post('/salvarBackup', async (req, res) => {
+  const { usuario, backup } = req.body;
+  if (!usuario) return res.status(400).send("Usuário não informado");
 
-        // Criptografa a senha
-        const senhaCripto = await bcrypt.hash(senha, 10);
-        
-        // Salva o novo usuário
-        const novoUsuario = new User({ usuario, senha: senhaCripto });
-        await novoUsuario.save();
+  await Backup.updateOne(
+    { usuario },
+    { dados: backup, atualizadoEm: new Date() },
+    { upsert: true } // cria se não existir
+  );
 
-        res.status(201).json({ mensagem: "Conta criada com sucesso no banco de dados!" });
-    } catch (err) {
-        res.status(500).json({ erro: "Erro ao salvar o usuário." });
-    }
+  res.send("Backup salvo no servidor!");
 });
 
-// 4. ROTA DE LOGIN
-app.post('/login', async (req, res) => {
-    const { usuario, senha } = req.body;
-
-    try {
-        const user = await User.findOne({ usuario });
-        if (!user) {
-            return res.status(400).json({ erro: "Usuário não encontrado." });
-        }
-
-        const senhaValida = await bcrypt.compare(senha, user.senha);
-        if (!senhaValida) {
-            return res.status(400).json({ erro: "Senha incorreta." });
-        }
-
-        res.json({ 
-            mensagem: `Bem-vindo, ${usuario}!`,
-            usuario: user.usuario,
-            conquistas: user.conquistas 
-        });
-    } catch (err) {
-        res.status(500).json({ erro: "Erro no servidor." });
-    }
+// Rota para carregar backup
+app.get('/carregarBackup', async (req, res) => {
+  const usuario = req.query.usuario;
+  const backup = await Backup.findOne({ usuario });
+  if (!backup) return res.send("{}");
+  res.send(backup.dados);
 });
 
-// 5. ROTA PARA SALVAR/SINCRONIZAR CONQUISTAS
-app.post('/save-achievements', async (req, res) => {
-    const { usuario, conquistas } = req.body;
-
-    try {
-        await User.findOneAndUpdate({ usuario }, { conquistas });
-        res.json({ mensagem: "Conquistas sincronizadas na nuvem!" });
-    } catch (err) {
-        res.status(500).json({ erro: "Erro ao sincronizar." });
-    }
-});
-
-// 6. ROTA PARA BUSCAR CONQUISTAS
-app.get('/get-achievements/:usuario', async (req, res) => {
-    try {
-        const user = await User.findOne({ usuario: req.params.usuario });
-        if (user) {
-            res.json(user.conquistas);
-        } else {
-            res.status(404).json({ erro: "Usuário não encontrado" });
-        }
-    } catch (err) {
-        res.status(500).json({ erro: "Erro ao buscar dados." });
-    }
-});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`🚀 Servidor rodando na porta ${PORT}`));

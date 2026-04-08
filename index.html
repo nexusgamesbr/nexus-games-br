@@ -495,6 +495,7 @@
     <button class="toggle-btn toggle-left" onclick="toggleLeftSidebar()">☰ FILTROS</button>
     <button class="toggle-btn toggle-right" onclick="toggleRightSidebar()">☰ LISTA</button>
     <button class="achievements-btn" onclick="toggleAchievements()">Conquistas</button>
+    <button id="authBtn" class="action-btn btn-auth" style="position: fixed; top: 20px; right: 120px;"></button>
     <div class="detetiveimg" style="position: fixed; bottom: -70px; left: 50%; transform: translateX(-50%); z-index: 1001; pointer-events: none;">
         <img src="detetive.png" alt="Detetive" >
     </div>
@@ -917,6 +918,27 @@
             filterGames();
             checkAchievements();
         }
+
+        function updateAuthBtn() {
+            const authBtn = document.getElementById('authBtn');
+            const usuario = localStorage.getItem('usuarioLogado');
+            
+            if (usuario) {
+                // Mostrar botão de logout
+                authBtn.textContent = '🚪 SAIR';
+                authBtn.onclick = function() {
+                    localStorage.clear();
+                    location.reload();
+                };
+            } else {
+                // Mostrar botão de login
+                authBtn.textContent = '🔐 LOGIN';
+                authBtn.onclick = function() {
+                    window.location.href = 'https://exploitsroblox.github.io/login';
+                };
+            }
+        }
+
         // Verificar jogos já desbloqueados ao abrir a página
         window.onload = function() {
             Object.values(DATABASE_CODES).forEach(gameId => {
@@ -926,7 +948,43 @@
             });
             filterGames(); // aplica filtro inicial de categorias/pesquisa
             checkAchievements(); // verifica conquistas ao carregar
+
+            // Atualizar o botão de autenticação
+            updateAuthBtn();
+
+            // Verificar se há usuário logado e mostrar nome acima do logo
+            const usuario = localStorage.getItem('usuarioLogado');
+            if (usuario) {
+                const titleDiv = document.getElementById('title');
+                const userName = document.createElement('h3');
+                userName.textContent = `Bem-vindo, ${usuario}!`;
+                userName.style.color = 'var(--text-color)';
+                userName.style.textAlign = 'center';
+                userName.style.marginBottom = '10px';
+                titleDiv.insertBefore(userName, titleDiv.firstChild);
+            }
         };
+       
+        setTimeout(() => {
+                localStorage.setItem('backup', JSON.stringify(localStorage));
+                console.log('Dados salvos!');
+        }, 5000);
+        async function carregarBackup() {
+  const usuario = localStorage.getItem("usuarioLogado");
+  if (!usuario) return;
+
+  const res = await fetch(`/carregarBackup?usuario=${usuario}`);
+  const dados = await res.json();
+
+  // Restaura no localStorage
+  for (const chave in dados) {
+    localStorage.setItem(chave, dados[chave]);
+  }
+  console.log("Backup carregado do servidor!");
+}
+
+carregarBackup();
+
     </script>
 </body>
 </html>
